@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-
+using Xunit;
 
 namespace BooksRestAPI
 {
@@ -22,6 +22,7 @@ namespace BooksRestAPI
 
         public string trimTitle(string title)
         {
+            //removes any + signs from a string and replaces with a space
             string[] charsToRemove = new string[] { "+" };
             foreach (var c in charsToRemove)
             {
@@ -30,20 +31,22 @@ namespace BooksRestAPI
             return title;
         }
 
-        public string getAPIResponse(string restRequest)
+        public RestResponse getAPIResponse(string restRequest)
         {
+            //establish new client and request for API
             var client = new RestClient(baseURL);
             var request = new RestRequest(restRequest);
-            return client.ExecuteAsync(request).Result.Content; //returns the entire response(json data) as string
+            return client.ExecuteAsync(request).Result; //returns the entire response(json data) as string
         }
 
         public void getBooksByTitle(string title)
         {
-            //gets the api response of the given request as paramter
-            string result = getAPIResponse("search.json?title=" + title + "");
+            //gets the api response of the given request as paramter and conver to string
+            string result = getAPIResponse("search.json?title=" + title + "").Content;
 
             //parse the json data and extract the first seed in the docs array that consists of books and their ids matching the title
             var myDetails = JsonConvert.DeserializeObject<Rootobject>(result);
+            Console.WriteLine(myDetails);
 
             //loop through each set of books in the docs array
             for (int i = 0; i < myDetails.docs.Length; i++)
@@ -73,26 +76,18 @@ namespace BooksRestAPI
 
         public void compareAPIResponseData(String title)
         {
-            JObject o1 = JObject.Parse(File.ReadAllText(@"C:\Users\B\Desktop\BooksAPI\BooksAPI\CompareData.json"));
+            var o1 = JObject.Parse(File.ReadAllText(@"C:\Users\B\Desktop\BooksAPI\BooksAPI\CompareData.json"));
 
-            string apiResponse = getAPIResponse("search.json?title=" + title + "");
+            RestResponse apiResponse = getAPIResponse("search.json?title=" + title + ""); //call the request and get the response to compare
 
-            JTokenEqualityComparer comp = new JTokenEqualityComparer();
+            var o2 = JObject.Parse(apiResponse.Content); //parses the content of response to JObject so it can be compared with the .json file
 
-            var hashCode1 = comp.GetHashCode(o1);
-            var hashCode2 = comp.GetHashCode(apiResponse);
-            // assert            
-            Assert.Equal(hashCode1, hashCode2);
-
-            Console.WriteLine(apiResponse);
-
-            if (apiResponse.Equals(o1)){
-                Console.WriteLine("Data matches");
-            }
-            else
+            if (o1.Equals(o2))
             {
-                Console.WriteLine("Data does not match");
+                Console.WriteLine("Response from the GET request matches");
             }
+            else Console.WriteLine("Response from the GET request does not match");
+
         }
 
     }
