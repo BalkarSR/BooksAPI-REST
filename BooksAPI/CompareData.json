@@ -1,0 +1,92 @@
+﻿{
+  "numFound": 1,
+  "start": 0,
+  "numFoundExact": true,
+  "docs": [
+    {
+      "key": "/works/OL15047325W",
+      "text": [
+        "/works/OL15047325W",
+        "Goodnight Moon 123 Lap Edition",
+        "OL9953293M",
+        "234235364",
+        "Clement Hurd (Illustrator)",
+        "9780061667558",
+        "HarperFestival",
+        "OL22122A",
+        "Margaret Wise Brown",
+        "Juniper Sage",
+        "Margaret Wise Brown",
+        "Golden MacDonald",
+        "Timothy Hay"
+      ],
+      "type": "work",
+      "seed": [
+        "/books/OL0000000M",
+        "/works/OL15047325W",
+        "/authors/OL22122A"
+      ],
+      "title": "Goodnight Moon 123 Lap Edition",
+      "title_suggest": "Goodnight Moon 123 Lap Edition",
+      "has_fulltext": false,
+      "edition_count": 1,
+      "edition_key": [
+        "OL9953293M",
+        "OL11111111"
+      ],
+      "publish_date": [
+        "July 1, 2008"
+      ],
+      "publish_year": [
+        2008
+      ],
+      "first_publish_year": 2008,
+      "oclc": [
+        "234235364"
+      ],
+      "contributor": [
+        "Clement Hurd (Illustrator)"
+      ],
+      "isbn": [
+        "0061667552",
+        "9780061667558"
+      ],
+      "last_modified_i": 1582912881,
+      "ebook_count_i": 0,
+      "publisher": [
+        "HarperFestival"
+      ],
+      "language": [
+        "eng"
+      ],
+      "author_key": [
+        "OL22122A"
+      ],
+      "author_name": [
+        "Margaret Wise Brown"
+      ],
+      "author_alternative_name": [
+        "Juniper Sage",
+        "Margaret Wise Brown",
+        "Golden MacDonald",
+        "Timothy Hay"
+      ],
+      "id_goodreads": [
+        "2508736"
+      ],
+      "id_librarything": [
+        "3377897"
+      ],
+      "publisher_facet": [
+        "HarperFestival"
+      ],
+      "_version_": 1700699423277842432,
+      "author_facet": [
+        "OL22122A Margaret Wise Brown"
+      ]
+    }
+  ],
+  "num_found": 1,
+  "q": "",
+  "offset": null
+}

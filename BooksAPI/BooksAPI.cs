@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using BookAPIDataCollection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
-using System.Net;
-using System.Threading;
+
 
 namespace BooksRestAPI
 {
@@ -14,7 +15,8 @@ namespace BooksRestAPI
         static void Main(String[] args)
         {
             BooksAPI api = new BooksAPI();
-            api.getBooksByExactTitle("Goodnight+Moon");
+            api.getBooksByTitle("Goodnight+Moon");
+            api.compareAPIResponseData("Goodnight+Moon+123+Lap+Edition");
             
         }
 
@@ -32,10 +34,10 @@ namespace BooksRestAPI
         {
             var client = new RestClient(baseURL);
             var request = new RestRequest(restRequest);
-            return client.ExecuteAsync(request).Result.Content; //returns the json as string
+            return client.ExecuteAsync(request).Result.Content; //returns the entire response(json data) as string
         }
 
-        public void getBooksByExactTitle(string title)
+        public void getBooksByTitle(string title)
         {
             //gets the api response of the given request as paramter
             string result = getAPIResponse("search.json?title=" + title + "");
@@ -69,18 +71,32 @@ namespace BooksRestAPI
 
         }
 
+        public void compareAPIResponseData(String title)
+        {
+            JObject o1 = JObject.Parse(File.ReadAllText(@"C:\Users\B\Desktop\BooksAPI\BooksAPI\CompareData.json"));
+
+            string apiResponse = getAPIResponse("search.json?title=" + title + "");
+
+            JTokenEqualityComparer comp = new JTokenEqualityComparer();
+
+            var hashCode1 = comp.GetHashCode(o1);
+            var hashCode2 = comp.GetHashCode(apiResponse);
+            // assert            
+            Assert.Equal(hashCode1, hashCode2);
+
+            Console.WriteLine(apiResponse);
+
+            if (apiResponse.Equals(o1)){
+                Console.WriteLine("Data matches");
+            }
+            else
+            {
+                Console.WriteLine("Data does not match");
+            }
+        }
+
     }
 
-    public class Rootobject
-    {
-        public Doc[] docs { get; set; }
-    }
-
-    public class Doc
-    {
-        public string key { get; set; }
-        public string title { get; set; }
-        public int first_publish_year { get; set; }
-    }
+    
 
 }
