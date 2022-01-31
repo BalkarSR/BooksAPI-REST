@@ -7,13 +7,15 @@ namespace BooksRestAPI
 {
     public class BooksAPI
     {
-        int numOfBooks { get; set; }
+        int numOfBooks = 0;
+        string baseURL = "https://openlibrary.org/";
+        List<string> bookIDs = new List<string>();
 
         static void Main(String[] args)
         {
             BooksAPI api = new BooksAPI();
             api.getBooksByExactTitle("Goodnight+Moon");
-            Console.WriteLine(api.numOfBooks);
+            
         }
 
         public string trimTitle(string title)
@@ -25,31 +27,44 @@ namespace BooksRestAPI
             }
             return title;
         }
+
+        public string getAPIResponse(string restRequest)
+        {
+            var client = new RestClient(baseURL);
+            var request = new RestRequest(restRequest);
+            return client.ExecuteAsync(request).Result.Content; //returns the json as string
+        }
+
         public void getBooksByExactTitle(string title)
         {
-            numOfBooks = 0;
-            //set base url
-            var restClient = new RestClient("https://openlibrary.org/");
-            //create the GET request and record it in the response variable
-            var request = new RestRequest("search.json?title=" + title + "");
-            var response = restClient.ExecuteGetAsync(request).Result;
+            //gets the api response of the given request as paramter
+            string result = getAPIResponse("search.json?title=" + title + "");
 
-            //checks for status code 200
-            if (response.StatusCode == HttpStatusCode.OK)
+            //parse the json data and extract the first seed in the docs array that consists of books and their ids matching the title
+            var myDetails = JsonConvert.DeserializeObject<Rootobject>(result);
+
+            //loop through each set of books in the docs array
+            for (int i = 0; i < myDetails.docs.Length; i++)
             {
-                string result = response.Content;
-
-                //parse the json data and extract the first seed in the docs array that consists of books and their ids matching the title
-                var myDetails = JsonConvert.DeserializeObject<Rootobject>(result);
-
-                for(int i = 0; i < myDetails.docs.Length; i++)
+                //check if the title matches exactly and inc the counter
+                if (myDetails.docs[i].title.Equals(trimTitle(title)))
                 {
-                    if (myDetails.docs[i].title.Equals(trimTitle(title)))
-                    {
-                        numOfBooks++;
-                    }
+                    numOfBooks++;
                 }
-                
+
+                //check if the book's publish year 2000+ and grab its key value
+                if(myDetails.docs[i].first_publish_year >= 2000)
+                {
+                    bookIDs.Add(myDetails.docs[i].key);
+                }
+            }
+
+
+            Console.WriteLine("Total number of books matching the title '" + trimTitle(title) + "': " + numOfBooks);
+            Console.WriteLine("Keys of books published since 2000:");
+            foreach (var key in bookIDs)
+            {
+                Console.WriteLine(key);
             }
 
         }
@@ -65,7 +80,7 @@ namespace BooksRestAPI
     {
         public string key { get; set; }
         public string title { get; set; }
-        public int[] publish_year { get; set; }
+        public int first_publish_year { get; set; }
     }
 
 }
