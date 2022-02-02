@@ -12,11 +12,20 @@ namespace BooksRestAPI
 {
     public class BooksAPI
     {
-        int numOfBooks = 0;
-        string baseURL = ConfigurationManager.AppSettings.Get("baseURL");
-        string bookTitle = ConfigurationManager.AppSettings.Get("bookTitle");
-        string bookTitleCompare = ConfigurationManager.AppSettings.Get("bookTitleCompare");
-        List<string> bookIDs = new List<string>();
+        private int numOfBooks;
+        private string baseURL;
+        private string bookTitle;
+        private string bookTitleCompare;
+        private List<string> bookIDs;
+
+        public BooksAPI()
+        {
+             numOfBooks = 0;
+             baseURL = ConfigurationManager.AppSettings.Get("baseURL");
+             bookTitle = ConfigurationManager.AppSettings.Get("bookTitle");
+             bookTitleCompare = ConfigurationManager.AppSettings.Get("bookTitleCompare");
+             bookIDs = new List<string>();
+        }
 
         //takes the GET request as func param
         public string getAPIResponse(string restRequest)
@@ -51,19 +60,23 @@ namespace BooksRestAPI
                 }
             }
 
+        }
+
+        //prints num of matching books by the provided title and keys of books published since 2000
+        public void printBookDetails()
+        {
             Console.WriteLine("Total number of books matching the title '" + bookTitleCompare + "': " + numOfBooks);
             Console.WriteLine("Keys of books published since 2000:");
             foreach (var key in bookIDs)
             {
                 Console.WriteLine(key);
             }
-
         }
 
         [Test]
         public void compareAPIResponseData()
         {
-            var expectedData = JToken.Parse(File.ReadAllText(@"C:\Users\B\Desktop\BooksAPI\BooksAPI\CompareData.json"));
+            var expectedData = JToken.Parse(File.ReadAllText(@"C:\Users\B\Desktop\BooksAPI\BooksAPI\CompareData.json")); //gets the api data from a local file to compare to
 
             string apiResponse = getAPIResponse("search.json?title=" + bookTitleCompare + ""); //call the request and get the response to 
             var actualData = JToken.Parse(apiResponse); //parses the content of response to JObject so it can be compared with the .json file

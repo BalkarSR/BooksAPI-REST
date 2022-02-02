@@ -13,8 +13,8 @@ namespace BooksAPI_Inti
         {
             BooksAPI api = new BooksAPI();
             api.getBooksByTitle();
+            api.printBookDetails();
             api.compareAPIResponseData();
-
         }
     }
     
